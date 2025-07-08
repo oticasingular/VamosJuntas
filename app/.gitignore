@@ -1,1 +1,36 @@
+# Arquivos de build
 /build
+/app/build
+
+# Arquivos de IDE
+/.idea
+*.iml
+
+# Arquivos do sistema
+.DS_Store
+
+# Arquivos do Gradle
+.gradle
+/local.properties
+
+# Arquivos de log e temporários
+*.log
+*.tmp
+
+# Arquivos do Firebase (NÃO subir com segredos!)
+google-services.json
+
+# Arquivos de cache
+.cxx
+.externalNativeBuild
+captures/
+
+# Arquivos de backup
+*.bak
+*.swp
+
+# NDK / CMake gerado
+*.hprof
+
+# Arquivos pessoais de configuração
+.env
