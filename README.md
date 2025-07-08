@@ -54,6 +54,22 @@
 
 ---
 
+## 💡 Funcionalidades futuras
+
+- 🔍 Buscar caronas compatíveis por rota e horário
+- 🗺️ Exibir mapa com rotas sugeridas
+- 📨 Enviar notificações push
+- 🧚 Tela de perfil com histórico de caronas
+
+---
+
+## 📄 Licença
+
+Projeto acadêmico para fins educativos.
+Se quiser adaptar para produção, leve em conta LGPD, ética e privacidade das usuárias.
+Compartilhe com outras mulheres desenvolvedoras! 👭
+
+---
 <details>
   <summary>📂 Estrutura do projeto (clique para expandir)</summary>
 
@@ -74,14 +90,3 @@ firstapp/
 │   └── values/
 └── google-services.json (🚫 privado)
 
-##💡 Funcionalidades futuras
-
--🔍 Buscar caronas compatíveis por rota e horário
--🗺️ Exibir mapa com rotas sugeridas
--📨 Enviar notificações push
--🧚 Tela de perfil com histórico de caronas
-
-📄 Licença
-Projeto acadêmico para fins educativos.
-Se quiser adaptar para produção, leve em conta LGPD, ética e privacidade das usuárias.
-Compartilhe com outras mulheres desenvolvedoras! 👭
