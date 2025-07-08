@@ -5,29 +5,28 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.firstapp.model.PreferenciasRota
+import com.example.firstapp.model.User
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 @Composable
-fun LoginScreen (onLoginSuccess: () -> Unit){
+fun LoginScreen(onLoginSuccess: () -> Unit) {
     val context = LocalContext.current
     val activity = context as Activity
     val auth = FirebaseAuth.getInstance()
+    val db = Firebase.firestore
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -39,21 +38,17 @@ fun LoginScreen (onLoginSuccess: () -> Unit){
             auth.signInWithCredential(credential)
                 .addOnCompleteListener { authTask ->
                     if (authTask.isSuccessful) {
-                        Toast.makeText(context, "Seja vem vinda! 💜", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Seja bem-vinda 💜", Toast.LENGTH_SHORT).show()
+                        salvarUsuariaNoFirestore()
                         onLoginSuccess()
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Falha no login. Tente novamente.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, "Falha no login", Toast.LENGTH_SHORT).show()
                         Log.e("Login", "Erro: ${authTask.exception?.message}")
                     }
-
                 }
         } catch (e: Exception) {
-            Toast.makeText(context, "Erro no Google Sign In: ${e.message}", Toast.LENGTH_SHORT)
-            Log.e("Login", "Erro: ${e.message}")
+            Toast.makeText(context, "Erro no Sign-In: ${e.message}", Toast.LENGTH_SHORT).show()
+            Log.e("Login", "Exceção: ${e.message}")
         }
     }
 
@@ -64,7 +59,7 @@ fun LoginScreen (onLoginSuccess: () -> Unit){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Vamos juntas", style = MaterialTheme.typography.headlineMedium)
+        Text("Vamos Juntas", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -77,4 +72,29 @@ fun LoginScreen (onLoginSuccess: () -> Unit){
             Text("Entrar com Google")
         }
     }
+}
+
+private fun salvarUsuariaNoFirestore() {
+    val user = FirebaseAuth.getInstance().currentUser ?: return
+    val db = Firebase.firestore
+
+    val usuaria = User(
+        uid = user.uid,
+        nome = user.displayName ?: "",
+        email = user.email ?: "",
+        preferencias = PreferenciasRota(
+            bairroSaida = "Centro",
+            bairroDestino = "Bigorrilho",
+            horarioPreferido = "22:00"
+        )
+    )
+
+    db.collection("usuarios").document(user.uid)
+        .set(usuaria)
+        .addOnSuccessListener {
+            Log.d("Firestore", "Usuária salva com sucesso!")
+        }
+        .addOnFailureListener { e ->
+            Log.e("Firestore", "Erro ao salvar: ${e.message}")
+        }
 }
